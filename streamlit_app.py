@@ -1,40 +1,85 @@
 import streamlit as st
+import pandas as pd
+
 from model.logistic_regression import run_logic
+from model.decision_tree import run_dt
+from model.knn import run_knn
+from model.naive_bayes import run_nb
+from model.random_forest import run_rf
+from model.xgboost_model import run_xgb
 
-st.title("ML Models Implementation")
+st.title("ML Models Evaluation")
 
-st.subheader("Select Model to Display Evaluation Metrics")
+st.markdown(
+    """
+    **Required columns in uploaded CSV file:**
+
+    ```
+    age, workclass, fnlwgt, education, education-num,
+    marital-status, occupation, relationship, race, sex,
+    capital-gain, capital-loss, hours-per-week,
+    native-country, income
+    ```
+
+    • Column names must match exactly  
+    • `income` column is required for evaluation  
+    • If no file is uploaded, evaluation evaluation run on **internal test split**
+    * If uploaded evaluation evaluation run on uploaded test data
+    """
+)
+
+uploaded_file = st.sidebar.file_uploader(
+    "Upload Test Dataset (CSV with same columns as Adult dataset)",
+    type=["csv"]
+)
+
+uploaded_test_df = None
+if uploaded_file is not None:
+    uploaded_test_df = pd.read_csv(uploaded_file)
+    st.success("Test dataset uploaded successfully!")
 
 selected_model = st.selectbox(
-    "Choose a Model",
-    ("Logistic Regression", "Decision Tree Classifier")
+    "Choose Model",
+    (
+        "Logistic Regression",
+        "Decision Tree",
+        "KNN",
+        "Naive Bayes",
+        "Random Forest",
+        "XGBoost"
+    )
 )
 
 if selected_model == "Logistic Regression":
-    st.info("Running Logistic Regression Model...")
-    metrics, conf_matrix, class_report = run_logic()
+    metrics, cm, report = run_logic(uploaded_test_df)
 
-    st.subheader("Evaluation Metrics")
-    for key, value in metrics.items():
-        st.metric(label=key, value=round(value, 4))
+elif selected_model == "Decision Tree":
+    metrics, cm, report = run_dt(uploaded_test_df)
 
-    st.subheader("Confusion Matrix")
-    st.write(conf_matrix)
+elif selected_model == "KNN":
+    metrics, cm, report = run_knn(uploaded_test_df)
 
-    import pandas as pd
+elif selected_model == "Naive Bayes":
+    metrics, cm, report = run_nb(uploaded_test_df)
 
-    report_df = pd.DataFrame.from_dict(
-        class_report,
-        orient="index"
-    )
+elif selected_model == "Random Forest":
+    metrics, cm, report = run_rf(uploaded_test_df)
 
-    # Reorder columns to match sklearn display
-    report_df = report_df[
-        ["precision", "recall", "f1-score", "support"]
-    ]
+elif selected_model == "XGBoost":
+    metrics, cm, report = run_xgb(uploaded_test_df)
 
-    # Round numeric values
-    report_df = report_df.round(4)
+# Display results
+st.subheader("Evaluation Metrics")
+for k, v in metrics.items():
+    st.metric(k, round(v, 4))
 
-    st.subheader("Classification Report")
-    st.dataframe(report_df, use_container_width=True)
+st.subheader("Confusion Matrix")
+st.write(cm)
+
+report_df = pd.DataFrame.from_dict(report, orient="index")
+report_df = report_df[
+    ["precision", "recall", "f1-score", "support"]
+].round(4)
+
+st.subheader("Classification Report")
+st.dataframe(report_df, use_container_width=True)
