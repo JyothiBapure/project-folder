@@ -8,10 +8,11 @@ from sklearn.metrics import (
 
 from model.data_utils import load_and_preprocess_data
 
-def run_nb():
+def run_nb(uploaded_test_df=None):
     # GaussianNB does NOT require scaling, but works fine either way
     X_train, X_test, y_train, y_test = load_and_preprocess_data(
         scale_features=False
+        uploaded_test_df=uploaded_test_df
     )
 
     # GaussianNB requires dense arrays
