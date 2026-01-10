@@ -10,7 +10,7 @@ from model.data_utils import load_and_preprocess_data
 
 def run_knn(uploaded_test_df=None):
     X_train, X_test, y_train, y_test = load_and_preprocess_data(
-        scale_features=True
+        scale_features=True,
         uploaded_test_df=uploaded_test_df
     )
 
