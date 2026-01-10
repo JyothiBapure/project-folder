@@ -6,11 +6,11 @@ from sklearn.metrics import (
     confusion_matrix, classification_report
 )
 
-from model.data_utils import load_and_preprocess_data
+from model.data_utils import load_train_and_test_data
 
 def run_nb(uploaded_test_df=None):
     
-    X_train, X_test, y_train, y_test = load_and_preprocess_data(
+    X_train, X_test, y_train, y_test = load_train_and_test_data(
         scale_features=False,
         uploaded_test_df=uploaded_test_df
     )
