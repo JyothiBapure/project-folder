@@ -21,7 +21,7 @@ def run_logic():
     np.random.seed(42)
 
     #url = "https://archive.ics.uci.edu/ml/machine-learning-databases/adult/adult.data"
-    file = "adult.data"
+    file = "data/adult.data"
     column_names = [
         'age', 'workclass', 'fnlwgt', 'education', 'education-num',
         'marital-status', 'occupation', 'relationship', 'race', 'sex',
@@ -66,5 +66,5 @@ def run_logic():
     }
 
     conf_matrix = confusion_matrix(y_test, preds)
-    class_report = classification_report(y_test, preds)
+    classification_report(y_test, preds, output_dict=True)
     return metrics, conf_matrix, class_report
