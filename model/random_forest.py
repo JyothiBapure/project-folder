@@ -14,30 +14,25 @@ def run_rf(uploaded_test_df=None):
         uploaded_test_df=uploaded_test_df
     )
 
-    model = RandomForestClassifier(
-        n_estimators=200,
-        max_depth=15,
-        min_samples_split=10,
-        random_state=42,
-        n_jobs=-1
-    )
+    #model = RandomForestClassifier(n_estimators=200, max_depth=15, min_samples_split=10, random_state=42, n_jobs=-1)
+    random_model = RandomForestClassifier(n_estimators=200, max_depth=15, random_state=42)
 
-    model.fit(X_train, y_train)
+    random_model.fit(X_train, y_train)
 
-    preds = model.predict(X_test)
-    probs = model.predict_proba(X_test)[:, 1]
+    y_preds = random_model.predict(X_test)
+    y_probs = random_model.predict_proba(X_test)[:, 1]
 
     metrics = {
-        "Accuracy": accuracy_score(y_test, preds),
-        "AUC": roc_auc_score(y_test, probs),
-        "Precision": precision_score(y_test, preds),
-        "Recall": recall_score(y_test, preds),
-        "F1": f1_score(y_test, preds),
-        "MCC": matthews_corrcoef(y_test, preds)
+        "Accuracy": accuracy_score(y_test, y_preds),
+        "AUC": roc_auc_score(y_test, y_probs),
+        "Precision": precision_score(y_test, y_preds),
+        "Recall": recall_score(y_test, y_preds),
+        "F1": f1_score(y_test, y_preds),
+        "MCC": matthews_corrcoef(y_test, y_preds)
     }
 
     return (
         metrics,
-        confusion_matrix(y_test, preds),
-        classification_report(y_test, preds, output_dict=True)
+        confusion_matrix(y_test, y_preds),
+        classification_report(y_test, y_preds, output_dict=True)
     )
