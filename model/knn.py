@@ -14,23 +14,23 @@ def run_knn(uploaded_test_df=None):
         uploaded_test_df=uploaded_test_df
     )
 
-    model = KNeighborsClassifier(
+    knn_model = KNeighborsClassifier(
         n_neighbors=5,
         weights="distance"
     )
 
-    model.fit(X_train, y_train)
+    knn_model.fit(X_train, y_train)
 
-    preds = model.predict(X_test)
-    probs = model.predict_proba(X_test)[:, 1]
+    y_preds = knn_model.predict(X_test)
+    y_probs = knn_model.predict_proba(X_test)[:, 1]
 
     metrics = {
-        "Accuracy": accuracy_score(y_test, preds),
-        "AUC": roc_auc_score(y_test, probs),
-        "Precision": precision_score(y_test, preds),
-        "Recall": recall_score(y_test, preds),
-        "F1": f1_score(y_test, preds),
-        "MCC": matthews_corrcoef(y_test, preds)
+        "Accuracy": accuracy_score(y_test, y_preds),
+        "AUC": roc_auc_score(y_test, y_probs),
+        "Precision": precision_score(y_test, y_preds),
+        "Recall": recall_score(y_test, y_preds),
+        "F1": f1_score(y_test, y_preds),
+        "MCC": matthews_corrcoef(y_test, y_preds)
     }
 
     return (
