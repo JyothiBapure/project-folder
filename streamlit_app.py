@@ -42,31 +42,31 @@ selected_model = st.selectbox(
     "Choose Model",
     (
         "Logistic Regression",
-        "Decision Tree",
-        "KNN",
-        "Naive Bayes",
-        "Random Forest",
-        "XGBoost"
+        "Decision Tree Classifier",
+        "K-Nearest Neighbor Classifier",
+        "Naive Bayes Classifier",
+        "Ensemble Model - Random Forest",
+        "Ensemble Model - XGBoost"
     )
 )
 
 if selected_model == "Logistic Regression":
-    metrics, cm, report = run_logic(uploaded_test_df)
+    metrics, confusion_metrix, report = run_logic(uploaded_test_df)
 
-elif selected_model == "Decision Tree":
-    metrics, cm, report = run_dt(uploaded_test_df)
+elif selected_model == "Decision Tree Classifier":
+    metrics, confusion_metrix, report = run_dt(uploaded_test_df)
 
-elif selected_model == "KNN":
-    metrics, cm, report = run_knn(uploaded_test_df)
+elif selected_model == "K-Nearest Neighbor Classifier":
+    metrics, confusion_metrix, report = run_knn(uploaded_test_df)
 
-elif selected_model == "Naive Bayes":
-    metrics, cm, report = run_nb(uploaded_test_df)
+elif selected_model == "Naive Bayes Classifier":
+    metrics, confusion_metrix, report = run_nb(uploaded_test_df)
 
-elif selected_model == "Random Forest":
-    metrics, cm, report = run_rf(uploaded_test_df)
+elif selected_model == "Ensemble Model - Random Forest":
+    metrics, confusion_metrix, report = run_rf(uploaded_test_df)
 
-elif selected_model == "XGBoost":
-    metrics, cm, report = run_xgb(uploaded_test_df)
+elif selected_model == "Ensemble Model - XGBoost":
+    metrics, confusion_metrix, report = run_xgb(uploaded_test_df)
 
 # Display results
 st.subheader("Evaluation Metrics")
@@ -74,7 +74,7 @@ for k, v in metrics.items():
     st.metric(k, round(v, 4))
 
 st.subheader("Confusion Matrix")
-st.write(cm)
+st.write(confusion_metrix)
 
 report_df = pd.DataFrame.from_dict(report, orient="index")
 report_df = report_df[
