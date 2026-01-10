@@ -12,7 +12,7 @@ def run_nb(uploaded_test_df=None):
     
     X_train, X_test, y_train, y_test = load_train_and_test_data(
         scale_features=False,
-        uploaded_test_df=uploaded_test_df
+        uploaded_test_file=uploaded_test_df
     )
 
     # GaussianNB requires dense arrays
