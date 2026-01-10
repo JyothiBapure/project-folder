@@ -11,7 +11,7 @@ from model.data_utils import load_train_and_test_data
 def run_rf(uploaded_test_df=None):
     X_train, X_test, y_train, y_test = load_train_and_test_data(
         scale_features=False,
-        uploaded_test_df=uploaded_test_df
+        uploaded_test_file=uploaded_test_df
     )
 
     #model = RandomForestClassifier(n_estimators=200, max_depth=15, min_samples_split=10, random_state=42, n_jobs=-1)
