@@ -90,10 +90,29 @@ for k, v in metrics.items():
 st.subheader("Confusion Matrix")
 st.write(confusion_metrix_)
 
-report_df = pd.DataFrame.from_dict(report, orient="index")
+st.subheader("Classification Report")
+
+filtered_report = {
+    k: v for k, v in report.items() if isinstance(v, dict)
+}
+
+report_df = pd.DataFrame.from_dict(filtered_report, orient="index")
+
+# Add accuracy row
+if "accuracy" in report:
+    report_df.loc["accuracy", "precision"] = report["accuracy"]
+
 report_df = report_df[
     ["precision", "recall", "f1-score", "support"]
 ].round(4)
 
-st.subheader("Classification Report")
+# Replace NaN values for display
+report_df[["precision", "recall", "f1-score"]] = (
+    report_df[["precision", "recall", "f1-score"]]
+    .astype(float)
+    .fillna("-")
+)
+
+report_df["support"] = report_df["support"].fillna("-")
+
 st.dataframe(report_df, use_container_width=True)
