@@ -8,11 +8,11 @@ from model.naive_bayes import run_nb
 from model.random_forest import run_rf
 from model.xgboost_model import run_xgb
 
-st.title("ML Models Evaluation")
+st.title("ML Models Evaluation to Predict annual income of an individual")
 
 st.markdown(
     """
-    • If no test file uploaded, evaluation evaluation run on **internal test split**
+    * If no test file uploaded, evaluation run on **internal test split**
     * If uploaded evaluation evaluation run on uploaded test data
     """
 )
@@ -65,21 +65,27 @@ selected_model = st.selectbox(
 )
 
 if selected_model == "Logistic Regression":
+    st.write("Running evaluation for Logistic Regression")
     metrics, confusion_metrix_, report = run_logic(uploaded_test_df)
 
 elif selected_model == "Decision Tree Classifier":
+    st.write("Running evaluation for Decision Tree Classifier")
     metrics, confusion_metrix_, report = run_dt(uploaded_test_df)
 
 elif selected_model == "K-Nearest Neighbor Classifier":
+    st.write("Running evaluation for K-Nearest Neighbor Classifier")
     metrics, confusion_metrix_, report = run_knn(uploaded_test_df)
 
 elif selected_model == "Naive Bayes Classifier":
+    st.write("Running evaluation for Naive Bayes Classifier")
     metrics, confusion_metrix_, report = run_nb(uploaded_test_df)
 
 elif selected_model == "Ensemble Model - Random Forest":
+    st.write("Running evaluation for Ensemble Model - Random Forest")
     metrics, confusion_metrix_, report = run_rf(uploaded_test_df)
 
 elif selected_model == "Ensemble Model - XGBoost":
+    st.write("Running evaluation for Ensemble Model - XGBoost")
     metrics, confusion_metrix_, report = run_xgb(uploaded_test_df)
 
 # Display results

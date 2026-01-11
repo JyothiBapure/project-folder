@@ -35,6 +35,6 @@ def run_knn(uploaded_test_df=None):
 
     return (
         metrics,
-        confusion_matrix(y_test, preds),
-        classification_report(y_test, preds, output_dict=True)
+        confusion_matrix(y_test, y_preds),
+        classification_report(y_test, y_preds, output_dict=True)
     )

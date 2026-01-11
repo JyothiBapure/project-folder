@@ -23,7 +23,7 @@ def run_dt(uploaded_test_df=None):
 
     decision_model.fit(X_train, y_train)
 
-    y_preds = decision_modell.predict(X_test)
+    y_preds = decision_model.predict(X_test)
     y_probs = decision_model.predict_proba(X_test)[:, 1]
 
     metrics = {

@@ -23,8 +23,8 @@ def run_xgb(uploaded_test_df=None):
 
     xgb_model.fit(X_train, y_train)
 
-    y_preds = model.predict(X_test)
-    y_probs = model.predict_proba(X_test)[:, 1]
+    y_preds = xgb_model.predict(X_test)
+    y_probs = xgb_model.predict_proba(X_test)[:, 1]
 
     metrics = {
         "Accuracy": accuracy_score(y_test, y_preds),
