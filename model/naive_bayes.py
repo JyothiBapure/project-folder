@@ -26,12 +26,12 @@ def run_nb(uploaded_test_df=None):
     y_probs = naive_model.predict_proba(X_test)[:, 1]
 
     metrics = {
-        "Accuracy": accuracy_score(y_test, y_preds),
-        "AUC": roc_auc_score(y_test, y_probs),
-        "Precision": precision_score(y_test, y_preds),
-        "Recall": recall_score(y_test, y_preds),
-        "F1": f1_score(y_test, y_preds),
-        "MCC": matthews_corrcoef(y_test, y_preds)
+        "Accuracy": round(accuracy_score(y_test, y_preds), 4),
+        "AUC": round(roc_auc_score(y_test, y_probs), 4),
+        "Precision": round(precision_score(y_test, y_preds), 4),
+        "Recall": round(recall_score(y_test, y_preds), 4),
+        "F1": round(f1_score(y_test, y_preds), 4),
+        "MCC": round(matthews_corrcoef(y_test, y_preds), 4)
     }
 
     return (
