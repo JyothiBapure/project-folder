@@ -1,5 +1,6 @@
 import streamlit as st
 import pandas as pd
+import numpy as np
 
 from model.logistic_regression import run_logic
 from model.decision_tree import run_dt
@@ -8,14 +9,13 @@ from model.naive_bayes import run_nb
 from model.random_forest import run_rf
 from model.xgboost_model import run_xgb
 
-st.title("ML Models Evaluation to Predict annual income of an individual")
+st.set_page_config(page_title="ML Models Evaluation", layout="wide")
+st.title("ML Models Evaluation to Predict Annual Income")
 
-st.markdown(
-    """
-    * If no test file uploaded, evaluation run on **internal test split**
-    * If uploaded evaluation evaluation run on uploaded test data
-    """
-)
+st.markdown("""
+* If no test file is uploaded, evaluation will run on the **internal test split**.
+* If a test file is uploaded, evaluation will run on the uploaded dataset.
+""")
 
 req_columns = [
     "age", "workclass", "fnlwgt", "education", "education-num",
@@ -24,33 +24,39 @@ req_columns = [
     "native-country", "income"
 ]
 
-uploaded_file = st.sidebar.file_uploader(
-    "Upload Test Dataset (CSV with same columns as Adult dataset)",
-    type=["csv"]
-)
-
 st.sidebar.subheader("📋 Required Dataset Columns")
-
 with st.sidebar.expander("Click to view required columns"):
     for col in req_columns:
         st.markdown(f"- `{col}`")
 
+# Sidebar: Upload test CSV or .test
+uploaded_file = st.sidebar.file_uploader(
+    "Upload Test Dataset (.csv or .test, with or without header)",
+    type=["csv", "test"]
+)
+
 uploaded_test_df = None
 if uploaded_file is not None:
-    uploaded_test_df = pd.read_csv(uploaded_file)
+    uploaded_test_df = pd.read_csv(
+        uploaded_file,
+        header=None,        # no header in adult.test
+        names=req_columns,
+        sep=r',\s*',        # handle spaces after commas
+        engine='python'
+    )
 
-    missing_cols = set(req_columns) - set(uploaded_test_df.columns)
+    # Strip spaces from column names
+    uploaded_test_df.columns = uploaded_test_df.columns.str.strip()
 
-    if missing_cols:
-        st.sidebar.error(
-            f"❌ Missing columns:\n{', '.join(missing_cols)}"
-        )
-        st.stop()
-    else:
-        st.sidebar.success("✅ All required columns present!")
-        
-    uploaded_test_df = pd.read_csv(uploaded_file)
-    st.success("Test dataset uploaded successfully!")
+    # Strip whitespace from string columns
+    str_cols = uploaded_test_df.select_dtypes(include='object').columns
+    uploaded_test_df[str_cols] = uploaded_test_df[str_cols].apply(lambda x: x.str.strip())
+
+    # Remove trailing periods from income (e.g., <=50K. -> <=50K)
+    if 'income' in uploaded_test_df.columns:
+        uploaded_test_df['income'] = uploaded_test_df['income'].str.replace('.', '', regex=False)
+
+    st.success("Test dataset uploaded and cleaned successfully!")
 
 selected_model = st.selectbox(
     "Choose Model",
@@ -88,37 +94,29 @@ elif selected_model == "Ensemble Model - XGBoost":
     st.write("Running evaluation for Ensemble Model - XGBoost")
     metrics, confusion_metrix_, report = run_xgb(uploaded_test_df)
 
-# Display results
+
+# Display metrics
 st.subheader("Evaluation Metrics")
 for k, v in metrics.items():
-    st.metric(k, round(v, 4))
+    st.metric(k, v)
 
+# Display confusion matrix
 st.subheader("Confusion Matrix")
 st.write(confusion_metrix_)
 
+# Display classification report
 st.subheader("Classification Report")
-
-filtered_report = {
-    k: v for k, v in report.items() if isinstance(v, dict)
-}
-
+filtered_report = {k: v for k, v in report.items() if isinstance(v, dict)}
 report_df = pd.DataFrame.from_dict(filtered_report, orient="index")
 
-# Add accuracy row
+# Add accuracy row safely
 if "accuracy" in report:
     report_df.loc["accuracy", "precision"] = report["accuracy"]
+    report_df.loc["accuracy", "recall"] = np.nan
+    report_df.loc["accuracy", "f1-score"] = np.nan
+    report_df.loc["accuracy", "support"] = np.nan
 
-report_df = report_df[
-    ["precision", "recall", "f1-score", "support"]
-].round(4)
+# Ensure numeric types and round
+report_df = report_df[["precision", "recall", "f1-score", "support"]].astype(float).round(4)
 
-# Replace NaN values for display
-report_df[["precision", "recall", "f1-score"]] = (
-    report_df[["precision", "recall", "f1-score"]]
-    .astype(float)
-    .fillna("-")
-)
-
-report_df["support"] = report_df["support"].fillna("-")
-
-st.dataframe(report_df, use_container_width=True)
+st.dataframe(report_df, width="stretch")
