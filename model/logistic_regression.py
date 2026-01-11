@@ -14,19 +14,19 @@ def run_logic(uploaded_test_df=None):
         uploaded_test_file=uploaded_test_df
     )
 
-    logistic_model = LogisticRegression(max_iter=1000)
+    logistic_model = LogisticRegression()
     logistic_model.fit(X_train, y_train)
 
     y_preds = logistic_model.predict(X_test)
     y_probs = logistic_model.predict_proba(X_test)[:, 1]
 
     metrics = {
-        "Accuracy": accuracy_score(y_test, y_preds),
-        "AUC": roc_auc_score(y_test, y_probs),
-        "Precision": precision_score(y_test, y_preds),
-        "Recall": recall_score(y_test, y_preds),
-        "F1": f1_score(y_test, y_preds),
-        "MCC": matthews_corrcoef(y_test, y_preds)
+        "Accuracy": round(accuracy_score(y_test, y_preds), 4),
+        "AUC": round(roc_auc_score(y_test, y_probs), 4),
+        "Precision": round(precision_score(y_test, y_preds), 4),
+        "Recall": round(recall_score(y_test, y_preds), 4),
+        "F1": round(f1_score(y_test, y_preds), 4),
+        "MCC": round(matthews_corrcoef(y_test, y_preds), 4)
     }
 
     return (
