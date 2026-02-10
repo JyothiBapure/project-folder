@@ -14,27 +14,6 @@ def run_xgb(uploaded_test_df=None):
         uploaded_test_file=uploaded_test_df
     )
 
-    #xgb_model = XGBClassifier(n_estimators=100, max_depth=6, learning_rate=0.1, subsample=0.8, colsample_bytree=0.8,
-    #    objective="binary:logistic",
-    #    eval_metric="logloss",
-    #    random_state=42,
-    #    n_jobs=-1
-    #)
-
-    #xgb_model.fit(X_train, y_train)
-    #xgb_model = XGBClassifier(
-    #    n_estimators=120,          # cut from 300
-     #   max_depth=4,               # shallower trees
-     #   learning_rate=0.1,
-     #   subsample=0.7,
-     #   colsample_bytree=0.7,
-     #   tree_method="hist",        # HUGE speed boost
-     #   objective="binary:logistic",
-     #   eval_metric="logloss",
-     #   random_state=42,
-     #   n_jobs=-1
-    #)
-
     xgb_model = XGBClassifier(
         n_estimators=60,
         max_depth=3,
@@ -49,17 +28,10 @@ def run_xgb(uploaded_test_df=None):
         n_jobs=-1
     )
 
-    #start = time.time()
-    
     xgb_model.fit(X_train, y_train)
-    #st.write(f"⏱️ Training time: {start:.2f} seconds")
     
-
-    #start = time.time()
     
     y_preds = xgb_model.predict(X_test)
-    #st.write(f"⏱️ Pred time: {start:.2f} seconds")
-    
     y_probs = xgb_model.predict_proba(X_test)[:, 1]
 
     metrics = {
