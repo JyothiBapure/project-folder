@@ -35,13 +35,13 @@ with st.sidebar.expander("Click to view required columns"):
 # --------------------------------------------------
 #st.sidebar("Download Sample Test Dataset")
 
-st.sidebar.subheader("Download Sample Test Dataset")
+#st.sidebar.subheader("Download Sample Test Dataset")
 try:
     with open("adult.test", "rb") as f:
         adult_test_bytes = f.read()
 
     st.sidebar.download_button(
-        label="Download adult.test",
+        label="Download Test Data adult.test",
         data=adult_test_bytes,
         file_name="adult.test",
         mime="text/csv"
