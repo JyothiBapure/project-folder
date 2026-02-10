@@ -17,17 +17,39 @@ st.markdown("""
 * If a test file is uploaded, evaluation will run on the uploaded dataset.
 """)
 
-req_columns = [
+"""req_columns = [
     "age", "workclass", "fnlwgt", "education", "education-num",
     "marital-status", "occupation", "relationship", "race", "sex",
     "capital-gain", "capital-loss", "hours-per-week",
     "native-country", "income"
-]
+]"""
 
-st.sidebar.subheader("📋 Required Dataset Columns")
+"""st.sidebar.subheader("📋 Required Dataset Columns")
 with st.sidebar.expander("Click to view required columns"):
     for col in req_columns:
         st.markdown(f"- `{col}`")
+"""
+
+# --------------------------------------------------
+# Download test dataset
+# --------------------------------------------------
+st.sidebar("Download Sample Test Dataset")
+
+st.sidebar.subheader("Download Sample Test Dataset")
+try:
+    with open("adult.test", "rb") as f:
+        adult_test_bytes = f.read()
+
+    st.sidebar.download_button(
+        label="Download adult.test",
+        data=adult_test_bytes,
+        file_name="adult.test",
+        mime="text/csv"
+    )
+except FileNotFoundError:
+    st.warning("Test dataset not found in repository.")
+
+st.markdown("---")
 
 # Sidebar: Upload test CSV or .test
 uploaded_file = st.sidebar.file_uploader(
