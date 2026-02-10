@@ -1,3 +1,4 @@
+import time
 from xgboost import XGBClassifier
 from sklearn.metrics import (
     accuracy_score, roc_auc_score,
@@ -23,27 +24,32 @@ def run_xgb(uploaded_test_df=None):
 
     #xgb_model.fit(X_train, y_train)
     xgb_model = XGBClassifier(
-        n_estimators=150,
-        max_depth=4,
+        n_estimators=120,          # cut from 300
+        max_depth=4,               # shallower trees
         learning_rate=0.1,
         subsample=0.7,
         colsample_bytree=0.7,
-        tree_method="hist",
+        tree_method="hist",        # HUGE speed boost
         objective="binary:logistic",
         eval_metric="logloss",
         random_state=42,
         n_jobs=-1
     )
 
+    start = time.time()
+    
     xgb_model.fit(
         X_train, y_train,
         eval_set=[(X_test, y_test)],
-        early_stopping_rounds=20,
+        early_stopping_rounds=15,  # stops early if no improvement
         verbose=False
     )
+    print("Training time:", time.time() - start)
 
-
+    start = time.time()
+    
     y_preds = xgb_model.predict(X_test)
+    print("Prediction time:", time.time() - start)
     y_probs = xgb_model.predict_proba(X_test)[:, 1]
 
     metrics = {
