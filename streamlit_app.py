@@ -33,7 +33,7 @@ req_columns = [
 # --------------------------------------------------
 # Download test dataset
 # --------------------------------------------------
-#st.sidebar("Download Sample Test Dataset")
+st.sidebar("Download Test Dataset")
 
 #st.sidebar.subheader("Download Sample Test Dataset")
 try:
@@ -80,6 +80,9 @@ if uploaded_file is not None:
 
     st.success("Test dataset uploaded and cleaned successfully!")
 
+    st.subheader("📄 Preview of Uploaded Test Dataset (Top 10 Rows)")
+    st.dataframe(uploaded_test_df.head(10), width="stretch")
+
 selected_model = st.selectbox(
     "Choose Model",
     (
@@ -119,8 +122,20 @@ elif selected_model == "Ensemble Model - XGBoost":
 
 # Display metrics
 st.subheader("Evaluation Metrics")
-for k, v in metrics.items():
-    st.metric(k, v)
+#for k, v in metrics.items():
+#    st.metric(k, v)
+items = list(metrics.items())
+
+for i in range(0, len(items), 2):
+    col1, col2 = st.columns(2)
+
+    with col1:
+        st.metric(items[i][0], round(float(items[i][1]), 4))
+
+    if i + 1 < len(items):
+        with col2:
+            st.metric(items[i+1][0], round(float(items[i+1][1]), 4))
+
 
 # Display confusion matrix
 st.subheader("Confusion Matrix")
