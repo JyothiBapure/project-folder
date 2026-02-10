@@ -94,70 +94,71 @@ selected_model = st.selectbox(
         "Ensemble Model - XGBoost"
     )
 )
+run_clicked = st.button("▶ Run Evaluation")
+if run_clicked:
+    if selected_model == "Logistic Regression":
+        st.write("Running evaluation for Logistic Regression")
+        metrics, confusion_metrix_, report = run_logic(uploaded_test_df)
 
-if selected_model == "Logistic Regression":
-    st.write("Running evaluation for Logistic Regression")
-    metrics, confusion_metrix_, report = run_logic(uploaded_test_df)
+    elif selected_model == "Decision Tree Classifier":
+        st.write("Running evaluation for Decision Tree Classifier")
+        metrics, confusion_metrix_, report = run_dt(uploaded_test_df)
 
-elif selected_model == "Decision Tree Classifier":
-    st.write("Running evaluation for Decision Tree Classifier")
-    metrics, confusion_metrix_, report = run_dt(uploaded_test_df)
+    elif selected_model == "K-Nearest Neighbor Classifier":
+        st.write("Running evaluation for K-Nearest Neighbor Classifier")
+        metrics, confusion_metrix_, report = run_knn(uploaded_test_df)
 
-elif selected_model == "K-Nearest Neighbor Classifier":
-    st.write("Running evaluation for K-Nearest Neighbor Classifier")
-    metrics, confusion_metrix_, report = run_knn(uploaded_test_df)
+    elif selected_model == "Naive Bayes Classifier":
+        st.write("Running evaluation for Naive Bayes Classifier")
+        metrics, confusion_metrix_, report = run_nb(uploaded_test_df)
 
-elif selected_model == "Naive Bayes Classifier":
-    st.write("Running evaluation for Naive Bayes Classifier")
-    metrics, confusion_metrix_, report = run_nb(uploaded_test_df)
+    elif selected_model == "Ensemble Model - Random Forest":
+        st.write("Running evaluation for Ensemble Model - Random Forest")
+        metrics, confusion_metrix_, report = run_rf(uploaded_test_df)
 
-elif selected_model == "Ensemble Model - Random Forest":
-    st.write("Running evaluation for Ensemble Model - Random Forest")
-    metrics, confusion_metrix_, report = run_rf(uploaded_test_df)
-
-elif selected_model == "Ensemble Model - XGBoost":
-    st.write("Running evaluation for Ensemble Model - XGBoost")
-    metrics, confusion_metrix_, report = run_xgb(uploaded_test_df)
-
-
-# Display metrics
-st.subheader("Evaluation Metrics")
-#for k, v in metrics.items():
-#    st.metric(k, v)
-items = list(metrics.items())
-
-for i in range(0, len(items), 3):
-    col1, col2, col3 = st.columns(3)
-
-    with col1:
-        st.metric(items[i][0], round(float(items[i][1]), 4))
-
-    if i + 1 < len(items):
-        with col2:
-            st.metric(items[i+1][0], round(float(items[i+1][1]), 4))
-
-    if i + 2 < len(items):
-        with col3:
-            st.metric(items[i+2][0], round(float(items[i+2][1]), 4))
+    elif selected_model == "Ensemble Model - XGBoost":
+        st.write("Running evaluation for Ensemble Model - XGBoost")
+        metrics, confusion_metrix_, report = run_xgb(uploaded_test_df)
 
 
-# Display confusion matrix
-st.subheader("Confusion Matrix")
-st.write(confusion_metrix_)
+    # Display metrics
+    st.subheader("Evaluation Metrics")
+    #for k, v in metrics.items():
+    #    st.metric(k, v)
+    items = list(metrics.items())
 
-# Display classification report
-st.subheader("Classification Report")
-filtered_report = {k: v for k, v in report.items() if isinstance(v, dict)}
-report_df = pd.DataFrame.from_dict(filtered_report, orient="index")
+    for i in range(0, len(items), 3):
+        col1, col2, col3 = st.columns(3)
 
-# Add accuracy row safely
-if "accuracy" in report:
-    report_df.loc["accuracy", "precision"] = report["accuracy"]
-    report_df.loc["accuracy", "recall"] = np.nan
-    report_df.loc["accuracy", "f1-score"] = np.nan
-    report_df.loc["accuracy", "support"] = np.nan
+        with col1:
+            st.metric(items[i][0], round(float(items[i][1]), 4))
 
-# Ensure numeric types and round
-report_df = report_df[["precision", "recall", "f1-score", "support"]].astype(float).round(4)
+        if i + 1 < len(items):
+            with col2:
+                st.metric(items[i+1][0], round(float(items[i+1][1]), 4))
 
-st.dataframe(report_df, width="stretch")
+        if i + 2 < len(items):
+            with col3:
+                st.metric(items[i+2][0], round(float(items[i+2][1]), 4))
+
+
+    # Display confusion matrix
+    st.subheader("Confusion Matrix")
+    st.write(confusion_metrix_)
+
+    # Display classification report
+    st.subheader("Classification Report")
+    filtered_report = {k: v for k, v in report.items() if isinstance(v, dict)}
+    report_df = pd.DataFrame.from_dict(filtered_report, orient="index")
+
+    # Add accuracy row safely
+    if "accuracy" in report:
+        report_df.loc["accuracy", "precision"] = report["accuracy"]
+        report_df.loc["accuracy", "recall"] = np.nan
+        report_df.loc["accuracy", "f1-score"] = np.nan
+        report_df.loc["accuracy", "support"] = np.nan
+
+    # Ensure numeric types and round
+    report_df = report_df[["precision", "recall", "f1-score", "support"]].astype(float).round(4)
+
+    st.dataframe(report_df, width="stretch")
