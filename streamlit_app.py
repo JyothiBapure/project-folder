@@ -126,8 +126,8 @@ st.subheader("Evaluation Metrics")
 #    st.metric(k, v)
 items = list(metrics.items())
 
-for i in range(0, len(items), 2):
-    col1, col2 = st.columns(2)
+for i in range(0, len(items), 3):
+    col1, col2, col3 = st.columns(3)
 
     with col1:
         st.metric(items[i][0], round(float(items[i][1]), 4))
@@ -135,6 +135,10 @@ for i in range(0, len(items), 2):
     if i + 1 < len(items):
         with col2:
             st.metric(items[i+1][0], round(float(items[i+1][1]), 4))
+
+    if i + 2 < len(items):
+        with col3:
+            st.metric(items[i+2][0], round(float(items[i+2][1]), 4))
 
 
 # Display confusion matrix
