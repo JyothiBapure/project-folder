@@ -14,17 +14,32 @@ def run_dt(uploaded_test_df=None):
         uploaded_test_file=uploaded_test_df
     )
 
+    #decision_model = DecisionTreeClassifier(
+    #    criterion="gini",
+    #    max_depth=10,
+    #    min_samples_split=20,
+    #    random_state=42
+    #)
+
+    #decision_model.fit(X_train, y_train)
+
+    #y_preds = decision_model.predict(X_test)
+    #y_probs = decision_model.predict_proba(X_test)[:, 1]
+
     decision_model = DecisionTreeClassifier(
         criterion="gini",
         max_depth=10,
         min_samples_split=20,
+        class_weight='balanced',   # 👈 IMPORTANT
         random_state=42
     )
 
     decision_model.fit(X_train, y_train)
 
-    y_preds = decision_model.predict(X_test)
     y_probs = decision_model.predict_proba(X_test)[:, 1]
+
+    threshold = 0.4   # try 0.3, 0.4, 0.5
+    y_preds = (y_probs >= threshold).astype(int)
 
     metrics = {
         "Accuracy": round(accuracy_score(y_test, y_preds), 4),
