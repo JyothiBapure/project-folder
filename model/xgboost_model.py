@@ -22,13 +22,27 @@ def run_xgb(uploaded_test_df=None):
     #)
 
     #xgb_model.fit(X_train, y_train)
+    #xgb_model = XGBClassifier(
+    #    n_estimators=120,          # cut from 300
+     #   max_depth=4,               # shallower trees
+     #   learning_rate=0.1,
+     #   subsample=0.7,
+     #   colsample_bytree=0.7,
+     #   tree_method="hist",        # HUGE speed boost
+     #   objective="binary:logistic",
+     #   eval_metric="logloss",
+     #   random_state=42,
+     #   n_jobs=-1
+    #)
+
     xgb_model = XGBClassifier(
-        n_estimators=120,          # cut from 300
-        max_depth=4,               # shallower trees
+        n_estimators=60,
+        max_depth=3,
         learning_rate=0.1,
         subsample=0.7,
         colsample_bytree=0.7,
-        tree_method="hist",        # HUGE speed boost
+        tree_method="hist",
+        max_bin=256,
         objective="binary:logistic",
         eval_metric="logloss",
         random_state=42,
