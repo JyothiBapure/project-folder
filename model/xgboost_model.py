@@ -38,12 +38,7 @@ def run_xgb(uploaded_test_df=None):
 
     start = time.time()
     
-    xgb_model.fit(
-        X_train, y_train,
-        eval_set=[(X_test, y_test)],
-        callbacks=[callback.EarlyStopping(rounds=15, save_best=True)],
-        verbose=False
-    )
+    xgb_model.fit(X_train, y_train)
     print("Training time:", time.time() - start)
 
     start = time.time()
