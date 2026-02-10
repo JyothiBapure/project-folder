@@ -33,7 +33,7 @@ with st.sidebar.expander("Click to view required columns"):
 # --------------------------------------------------
 # Download test dataset
 # --------------------------------------------------
-st.sidebar("Download Sample Test Dataset")
+#st.sidebar("Download Sample Test Dataset")
 
 st.sidebar.subheader("Download Sample Test Dataset")
 try:
