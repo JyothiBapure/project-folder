@@ -24,11 +24,11 @@ req_columns = [
     "native-country", "income"
 ]
 
-"""st.sidebar.subheader("📋 Required Dataset Columns")
-with st.sidebar.expander("Click to view required columns"):
-    for col in req_columns:
-        st.markdown(f"- `{col}`")
-"""
+#st.sidebar.subheader("📋 Required Dataset Columns")
+#with st.sidebar.expander("Click to view required columns"):
+#    for col in req_columns:
+#        st.markdown(f"- `{col}`")
+#
 
 # --------------------------------------------------
 # Download test dataset
@@ -37,7 +37,7 @@ with st.sidebar.expander("Click to view required columns"):
 
 #st.sidebar.subheader("Download Sample Test Dataset")
 try:
-    with open("adult.test", "rb") as f:
+    with open("data/adult.test", "rb") as f:
         adult_test_bytes = f.read()
 
     st.sidebar.download_button(
