@@ -1,4 +1,5 @@
 import time
+import streamlit as st
 from xgboost import XGBClassifier
 from sklearn.metrics import (
     accuracy_score, roc_auc_score,
@@ -39,12 +40,14 @@ def run_xgb(uploaded_test_df=None):
     start = time.time()
     
     xgb_model.fit(X_train, y_train)
-    print("Training time:", time.time() - start)
+    st.write(f"⏱️ Training time: {start:.2f} seconds")
+    
 
     start = time.time()
     
     y_preds = xgb_model.predict(X_test)
-    print("Prediction time:", time.time() - start)
+    st.write(f"⏱️ Pred time: {start:.2f} seconds")
+    
     y_probs = xgb_model.predict_proba(X_test)[:, 1]
 
     metrics = {
