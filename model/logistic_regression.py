@@ -28,7 +28,7 @@ def run_logic(uploaded_test_df=None):
 
     y_probs = logistic_model.predict_proba(X_test)[:, 1]
 
-    threshold = 0.3   # try 0.3 or 0.4
+    threshold = 0.4   # try 0.3 or 0.4
     y_preds = (y_probs >= threshold).astype(int)
 
     metrics = {
