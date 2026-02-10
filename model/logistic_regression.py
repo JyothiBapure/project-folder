@@ -14,11 +14,22 @@ def run_logic(uploaded_test_df=None):
         uploaded_test_file=uploaded_test_df
     )
 
-    logistic_model = LogisticRegression()
+    #logistic_model = LogisticRegression()
+    logistic_model = LogisticRegression(
+        max_iter=2000,
+        class_weight='balanced',
+        solver='lbfgs'
+    )
+
     logistic_model.fit(X_train, y_train)
 
-    y_preds = logistic_model.predict(X_test)
+    #y_preds = logistic_model.predict(X_test)
+    #y_probs = logistic_model.predict_proba(X_test)[:, 1]
+
     y_probs = logistic_model.predict_proba(X_test)[:, 1]
+
+    threshold = 0.3   # try 0.3 or 0.4
+    y_preds = (y_probs >= threshold).astype(int)
 
     metrics = {
         "Accuracy": round(accuracy_score(y_test, y_preds), 4),
