@@ -33,9 +33,9 @@ req_columns = [
 # --------------------------------------------------
 # Download test dataset
 # --------------------------------------------------
-st.sidebar("Download Test Dataset")
+#st.sidebar("Download Test Dataset")
 
-#st.sidebar.subheader("Download Sample Test Dataset")
+st.sidebar.subheader("Download Sample Test Dataset")
 try:
     with open("data/adult.test", "rb") as f:
         adult_test_bytes = f.read()
