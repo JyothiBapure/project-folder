@@ -28,9 +28,10 @@ def run_dt(uploaded_test_df=None):
 
     decision_model = DecisionTreeClassifier(
         criterion="gini",
-        max_depth=10,
-        min_samples_split=20,
-        class_weight='balanced',   # 👈 IMPORTANT
+        max_depth=12,
+        min_samples_leaf=50,
+        min_samples_split=50,
+        class_weight='balanced',
         random_state=42
     )
 
