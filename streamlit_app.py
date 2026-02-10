@@ -35,13 +35,13 @@ req_columns = [
 # --------------------------------------------------
 #st.sidebar("Download Test Dataset")
 
-st.sidebar.subheader("Download Sample Test Dataset")
+st.sidebar.subheader("Download Test Dataset")
 try:
     with open("data/adult.test", "rb") as f:
         adult_test_bytes = f.read()
 
     st.sidebar.download_button(
-        label="Download Test Data adult.test",
+        label="Download adult.test data",
         data=adult_test_bytes,
         file_name="adult.test",
         mime="text/csv"
@@ -80,8 +80,8 @@ if uploaded_file is not None:
 
     st.success("Test dataset uploaded and cleaned successfully!")
 
-    st.subheader("📄 Preview of Uploaded Test Dataset (Top 10 Rows)")
-    st.dataframe(uploaded_test_df.head(10), width="stretch")
+    #st.subheader("📄 Preview of Uploaded Test Dataset (Top 10 Rows)")
+    #st.dataframe(uploaded_test_df.head(10), width="stretch")
 
 selected_model = st.selectbox(
     "Choose Model",
