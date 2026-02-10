@@ -14,14 +14,34 @@ def run_xgb(uploaded_test_df=None):
         uploaded_test_file=uploaded_test_df
     )
 
-    xgb_model = XGBClassifier(n_estimators=300, max_depth=6, learning_rate=0.1, subsample=0.8, colsample_bytree=0.8,
+    #xgb_model = XGBClassifier(n_estimators=100, max_depth=6, learning_rate=0.1, subsample=0.8, colsample_bytree=0.8,
+    #    objective="binary:logistic",
+    #    eval_metric="logloss",
+    #    random_state=42,
+    #    n_jobs=-1
+    #)
+
+    #xgb_model.fit(X_train, y_train)
+    xgb_model = XGBClassifier(
+        n_estimators=150,
+        max_depth=4,
+        learning_rate=0.1,
+        subsample=0.7,
+        colsample_bytree=0.7,
+        tree_method="hist",
         objective="binary:logistic",
         eval_metric="logloss",
         random_state=42,
         n_jobs=-1
     )
 
-    xgb_model.fit(X_train, y_train)
+    xgb_model.fit(
+        X_train, y_train,
+        eval_set=[(X_test, y_test)],
+        early_stopping_rounds=20,
+        verbose=False
+    )
+
 
     y_preds = xgb_model.predict(X_test)
     y_probs = xgb_model.predict_proba(X_test)[:, 1]
