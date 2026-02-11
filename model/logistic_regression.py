@@ -47,7 +47,7 @@ def run_logic(uploaded_test_df=None):
         "Recall": round(recall_score(y_test, y_preds, zero_division=0), 4),
         "F1": round(f1_score(y_test, y_preds, zero_division=0), 4),
         "MCC": round(matthews_corrcoef(y_test, y_preds), 4),
-        "Threshold_Used": round(best_threshold, 4)
+        #"Threshold_Used": round(best_threshold, 4)
     }
 
     return (
