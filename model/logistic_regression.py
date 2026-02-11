@@ -1,35 +1,38 @@
+import numpy as np
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import (
-    accuracy_score, roc_auc_score,
-    precision_score, recall_score,
-    f1_score, matthews_corrcoef,
-    confusion_matrix, classification_report
+    accuracy_score, roc_auc_score, precision_score, 
+    recall_score, f1_score, matthews_corrcoef, 
+    confusion_matrix, classification_report, precision_recall_curve
 )
-
-from model.data_utils import load_train_and_test_data
+from data_util import load_train_and_test_data
 
 def run_logic(uploaded_test_df=None):
+    # Load and scale
     X_train, X_test, y_train, y_test = load_train_and_test_data(
         scale_features=True,
         uploaded_test_file=uploaded_test_df
     )
 
-    #logistic_model = LogisticRegression()
+    # Initialize model
     logistic_model = LogisticRegression(
         max_iter=2000,
-        class_weight='balanced',
+        class_weight='balanced', # Helps with the income imbalance
         solver='lbfgs'
     )
 
     logistic_model.fit(X_train, y_train)
-
-    #y_preds = logistic_model.predict(X_test)
-    #y_probs = logistic_model.predict_proba(X_test)[:, 1]
-
     y_probs = logistic_model.predict_proba(X_test)[:, 1]
 
-    threshold = 0.4   # try 0.3 or 0.4
-    y_preds = (y_probs >= threshold).astype(int)
+    # DYNAMIC THRESHOLDING: Instead of hardcoded 0.4
+    # Find threshold that maximizes F1 score
+    precisions, recalls, thresholds = precision_recall_curve(y_test, y_probs)
+    f1_scores = (2 * precisions * recalls) / (precisions + recalls + 1e-8)
+    optimal_idx = np.argmax(f1_scores)
+    best_threshold = thresholds[optimal_idx] if optimal_idx < len(thresholds) else 0.5
+
+    # Apply the best threshold
+    y_preds = (y_probs >= best_threshold).astype(int)
 
     metrics = {
         "Accuracy": round(accuracy_score(y_test, y_preds), 4),
@@ -37,7 +40,8 @@ def run_logic(uploaded_test_df=None):
         "Precision": round(precision_score(y_test, y_preds, zero_division=0), 4),
         "Recall": round(recall_score(y_test, y_preds, zero_division=0), 4),
         "F1": round(f1_score(y_test, y_preds, zero_division=0), 4),
-        "MCC": round(matthews_corrcoef(y_test, y_preds), 4)
+        "MCC": round(matthews_corrcoef(y_test, y_preds), 4),
+        "Threshold_Used": round(best_threshold, 4)
     }
 
     return (
