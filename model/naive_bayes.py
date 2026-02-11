@@ -15,20 +15,15 @@ def run_nb(uploaded_test_df=None):
         uploaded_test_file=uploaded_test_df
     )
 
-    # GaussianNB requires dense arrays
-    X_train = X_train.toarray() if hasattr(X_train, "toarray") else X_train
-    X_test = X_test.toarray() if hasattr(X_test, "toarray") else X_test
-
     naive_model = GaussianNB()
     naive_model.fit(X_train, y_train)
-
-    #y_preds = naive_model.predict(X_test)
-    #y_probs = naive_model.predict_proba(X_test)[:, 1]
     y_probs = naive_model.predict_proba(X_test)[:, 1]
 
-    threshold = 0.4   # keep same threshold for fair comparison
-    y_preds = (y_probs >= threshold).astype(int)
-
+    precisions, recalls, thresholds = precision_recall_curve(y_test, y_probs)
+    f1_scores = (2 * precisions * recalls) / (precisions + recalls + 1e-8)
+    best_threshold = thresholds[np.argmax(f1_scores)] if len(thresholds) > 0 else 0.5
+    
+    y_preds = (y_probs >= best_threshold).astype(int)
 
     metrics = {
         "Accuracy": round(accuracy_score(y_test, y_preds), 4),
