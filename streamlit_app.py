@@ -2,12 +2,23 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 
-from model.logistic_regression import run_logic
-from model.decision_tree import run_dt
-from model.knn import run_knn
-from model.naive_bayes import run_nb
-from model.random_forest import run_rf
-from model.xgboost_model import run_xgb
+#from model.logistic_regression import run_logic
+#from model.decision_tree import run_dt
+#from model.knn import run_knn
+#from model.naive_bayes import run_nb
+#from model.random_forest import run_rf
+#from model.xgboost_model import run_xgb
+
+from data_util import load_training_data, load_test_data, preprocess
+
+from models import (
+    logistic_model,
+    decision_tree_model,
+    knn_model,
+    naive_bayes_model,
+    random_forest_model,
+    xgboost_model
+)
 
 st.set_page_config(page_title="ML Models Evaluation", layout="wide")
 st.title("ML Models Evaluation to Predict Annual Income")
