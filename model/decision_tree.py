@@ -32,8 +32,8 @@ def run_dt(uploaded_test_df=None):
     best_threshold = thresholds[optimal_idx]
 
     # Evaluate on test
-    y_test_probs = decision_model.predict_proba(X_test)[:, 1]
-    y_preds = (y_test_probs >= best_threshold).astype(int)
+    y_probs = decision_model.predict_proba(X_test)[:, 1]
+    y_preds = (y_probs >= best_threshold).astype(int)
 
     metrics = {
         "Accuracy": round(accuracy_score(y_test, y_preds), 4),
