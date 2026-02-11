@@ -9,7 +9,7 @@ import numpy as np
 #from model.random_forest import run_rf
 #from model.xgboost_model import run_xgb
 
-from data_util import load_training_data, load_test_data, preprocess
+from data_utils import load_training_data, load_test_data, preprocess
 
 from models import (
     logistic_model,
