@@ -14,16 +14,7 @@ def run_dt(uploaded_test_df=None):
         scale_features=True,
         uploaded_test_file=uploaded_test_df
     )
-
-    decision_model = DecisionTreeClassifier(
-        criterion="gini",
-        max_depth=12,
-        min_samples_leaf=50,
-        min_samples_split=50,
-        class_weight='balanced',
-        random_state=42
-    )
-
+    decision_model = DecisionTreeClassifier(max_depth=10, min_samples_leaf=50, class_weight='balanced', random_state=42)
     decision_model.fit(X_train, y_train)
     y_probs = decision_model.predict_proba(X_test)[:, 1]
 
