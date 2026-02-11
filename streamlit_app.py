@@ -160,7 +160,7 @@ if run_clicked:
     #    report_df.loc["accuracy", "precision"] = report["accuracy"]
     #    report_df.loc["accuracy", "recall"] = np.nan
     #    report_df.loc["accuracy", "f1-score"] = np.nan
-    3    report_df.loc["accuracy", "support"] = np.nan
+    #    report_df.loc["accuracy", "support"] = np.nan
 
     # Ensure numeric types and round
     #report_df = report_df[["precision", "recall", "f1-score", "support"]].astype(float).round(4)
