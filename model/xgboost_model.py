@@ -14,7 +14,15 @@ def run_xgb(uploaded_test_df=None):
         uploaded_test_file=uploaded_test_df
     )
     ratio = (y_train == 0).sum() / (y_train == 1).sum()
-    xgb_model = XGBClassifier(n_estimators=100, learning_rate=0.1, scale_pos_weight=ratio, random_state=42)
+    xgb_model = XGBClassifier(
+        n_estimators=100,
+        learning_rate=0.1,
+        max_depth=6,
+        scale_pos_weight=ratio,
+        random_state=42,
+        use_label_encoder=False,
+        eval_metric='logloss'
+    )
     xgb_model.fit(X_train, y_train)
     y_probs = xgb_model.predict_proba(X_test)[:, 1]
     
