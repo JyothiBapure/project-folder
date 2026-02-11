@@ -9,23 +9,36 @@ from sklearn.metrics import (
 from model.data_utils import load_train_and_test_data
 
 def run_logic(uploaded_test_df=None):
-    # Load and scale
-    X_train, X_test, y_train, y_test = load_train_and_test_data(
+
+    # 3-way split
+    X_train, X_val, X_test, y_train, y_val, y_test = load_train_and_test_data(
         scale_features=True,
         uploaded_test_file=uploaded_test_df
     )
-    logistic_model = LogisticRegression(class_weight='balanced', max_iter=1000, random_state=42)
-    logistic_model.fit(X_train, y_train)
-    y_probs = logistic_model.predict_proba(X_test)[:, 1]
 
-    # DYNAMIC THRESHOLDING: Instead of hardcoded 0.4
-    # Find threshold that maximizes F1 score
-    precisions, recalls, thresholds = precision_recall_curve(y_test, y_probs)
+    model = LogisticRegression(
+        class_weight='balanced',
+        max_iter=1000,
+        random_state=42
+    )
+
+    # Train
+    model.fit(X_train, y_train)
+
+    # -----------------------------
+    # Threshold tuning on VAL only
+    # -----------------------------
+    y_val_probs = model.predict_proba(X_val)[:, 1]
+
+    precisions, recalls, thresholds = precision_recall_curve(y_val, y_val_probs)
     f1_scores = (2 * precisions * recalls) / (precisions + recalls + 1e-8)
     optimal_idx = np.argmax(f1_scores)
-    best_threshold = thresholds[optimal_idx] if optimal_idx < len(thresholds) else 0.5
+    best_threshold = thresholds[optimal_idx]
 
-    # Apply the best threshold
+    # -----------------------------
+    # Final evaluation on TEST
+    # -----------------------------
+    y_probs = model.predict_proba(X_test)[:, 1]
     y_preds = (y_probs >= best_threshold).astype(int)
 
     metrics = {
