@@ -16,7 +16,14 @@ def run_rf(uploaded_test_df=None):
 
     #model = RandomForestClassifier(n_estimators=200, max_depth=15, min_samples_split=10, random_state=42, n_jobs=-1)
     #random_model = RandomForestClassifier(n_estimators=200, max_depth=15, random_state=42)
-    random_model = RandomForestClassifier(n_estimators=100, max_depth=12, class_weight='balanced', random_state=42)
+    random_model = RandomForestClassifier(
+        n_estimators=100,
+        max_depth=12,
+        min_samples_leaf=50,
+        class_weight='balanced',
+        random_state=42,
+        n_jobs=-1 # Uses all CPU cores
+    )
     random_model.fit(X_train, y_train)
     y_probs = random_model.predict_proba(X_test)[:, 1]
 
