@@ -17,8 +17,8 @@ def run_dt(uploaded_test_df=None):
     decision_model = DecisionTreeClassifier(
         max_depth=8,
         criterion='entropy',
-        min_samples_leaf=50,
-        min_samples_split=100,
+        min_samples_leaf=20,
+        min_samples_split=50,
         class_weight=None,
         random_state=42
     )
