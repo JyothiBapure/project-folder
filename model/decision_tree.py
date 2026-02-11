@@ -16,8 +16,10 @@ def run_dt(uploaded_test_df=None):
     )
 
     model = DecisionTreeClassifier(
-        max_depth=8,
-        criterion='entropy',
+        max_depth=6,                # Reduced depth
+        min_samples_split=50,       # Prevent tiny splits
+        min_samples_leaf=25,        # Force generalization
+        class_weight='balanced',    # Handle imbalance
         random_state=42
     )
 
