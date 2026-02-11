@@ -14,11 +14,16 @@ def run_logic(uploaded_test_df=None):
         uploaded_test_file=uploaded_test_df
     )
 
+    poly = PolynomialFeatures(degree=2, interaction_only=True, include_bias=False)
+    X_train_poly = poly.fit_transform(X_train)
+    X_test_poly = poly.transform(X_test)
+
     # Initialize model
     logistic_model = LogisticRegression(
-        max_iter=2000,
-        class_weight='balanced', # Helps with the income imbalance
-        solver='lbfgs'
+        penalty='l1', 
+        solver='liblinear', # Required for l1
+        class_weight='balanced', 
+        max_iter=2000
     )
 
     logistic_model.fit(X_train, y_train)
