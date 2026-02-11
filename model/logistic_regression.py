@@ -15,7 +15,7 @@ def run_logic(uploaded_test_df=None):
         uploaded_test_file=uploaded_test_df
     )
 
-    model = LogisticRegression(max_iter=1000)
+    model = LogisticRegression(max_iter=1000, class_weight='balanced')
     model.fit(X_train, y_train)
 
     y_preds = model.predict(X_test)
