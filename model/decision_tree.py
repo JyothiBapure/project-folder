@@ -19,7 +19,7 @@ def run_dt(uploaded_test_df=None):
         criterion='entropy',
         min_samples_leaf=50,
         min_samples_split=100,
-        class_weight='none',
+        class_weight=None,
         random_state=42
     )
     #decision_model = DecisionTreeClassifier(criterion = 'entropy')
