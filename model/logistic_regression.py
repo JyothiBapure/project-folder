@@ -6,7 +6,7 @@ from sklearn.metrics import (
     recall_score, f1_score, matthews_corrcoef, 
     confusion_matrix, classification_report, precision_recall_curve
 )
-from data_util import load_train_and_test_data
+from data_utils import load_train_and_test_data
 
 def run_logic(uploaded_test_df=None):
     # Load and scale
