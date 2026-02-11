@@ -22,15 +22,20 @@ def run_nb(uploaded_test_df=None):
     naive_model = GaussianNB()
     naive_model.fit(X_train, y_train)
 
-    y_preds = naive_model.predict(X_test)
+    #y_preds = naive_model.predict(X_test)
+    #y_probs = naive_model.predict_proba(X_test)[:, 1]
     y_probs = naive_model.predict_proba(X_test)[:, 1]
+
+    threshold = 0.4   # keep same threshold for fair comparison
+    y_preds = (y_probs >= threshold).astype(int)
+
 
     metrics = {
         "Accuracy": round(accuracy_score(y_test, y_preds), 4),
         "AUC": round(roc_auc_score(y_test, y_probs), 4),
-        "Precision": round(precision_score(y_test, y_preds), 4),
-        "Recall": round(recall_score(y_test, y_preds), 4),
-        "F1": round(f1_score(y_test, y_preds), 4),
+        "Precision": round(precision_score(y_test, y_preds, zero_division=0), 4),
+        "Recall": round(recall_score(y_test, y_preds, zero_division=0), 4),
+        "F1": round(f1_score(y_test, y_preds, zero_division=0), 4),
         "MCC": round(matthews_corrcoef(y_test, y_preds), 4)
     }
 
