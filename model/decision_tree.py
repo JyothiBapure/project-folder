@@ -1,5 +1,5 @@
 import numpy as np
-from sklearn.linear_model import LogisticRegression
+from sklearn.tree import DecisionTreeClassifier
 from sklearn.preprocessing import PolynomialFeatures
 from sklearn.metrics import (
     accuracy_score, roc_auc_score, precision_score, 
