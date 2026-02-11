@@ -47,6 +47,8 @@ def preprocess_data(data1, feature_columns=None, has_label=True):
 
     return X_encoded, y
 
+from sklearn.model_selection import train_test_split
+
 def load_train_and_test_data(scale_features=False, uploaded_test_file=None):
 
     train_raw = pd.read_csv(
@@ -57,34 +59,54 @@ def load_train_and_test_data(scale_features=False, uploaded_test_file=None):
         engine="python"
     )
 
-    X_full, y_full = preprocess_data(train_raw)
+    # If external uploaded test file is provided
+    if uploaded_test_file is not None:
+        X_train_full, y_train_full = preprocess_data(train_raw)
+        X_test, y_test = preprocess_data(
+            uploaded_test_file,
+            feature_columns=X_train_full.columns
+        )
 
-    # First split: Train vs Temp (Val+Test)
-    X_train, X_temp, y_train, y_temp = train_test_split(
-        X_full,
-        y_full,
-        test_size=0.3,
-        random_state=42,
-        stratify=y_full
-    )
+        # Split training into train + validation
+        X_train, X_val, y_train, y_val = train_test_split(
+            X_train_full, y_train_full,
+            test_size=0.2,
+            random_state=42,
+            stratify=y_train_full
+        )
 
-    # Second split: Val vs Test
-    X_val, X_test, y_val, y_test = train_test_split(
-        X_temp,
-        y_temp,
-        test_size=0.5,
-        random_state=42,
-        stratify=y_temp
-    )
+    else:
+        # Internal 3-way split
+        X_full, y_full = preprocess_data(train_raw)
 
+        # First split: Train + Temp
+        X_train, X_temp, y_train, y_temp = train_test_split(
+            X_full, y_full,
+            test_size=0.3,
+            random_state=42,
+            stratify=y_full
+        )
+
+        # Second split: Validation + Test
+        X_val, X_test, y_val, y_test = train_test_split(
+            X_temp, y_temp,
+            test_size=0.5,
+            random_state=42,
+            stratify=y_temp
+        )
+
+    # Scaling (for Logistic Regression only)
     if scale_features:
         scaler = StandardScaler()
+
+        X_train_cols = X_train.columns
+
         X_train = scaler.fit_transform(X_train)
         X_val = scaler.transform(X_val)
         X_test = scaler.transform(X_test)
 
-        X_train = pd.DataFrame(X_train, columns=X_full.columns)
-        X_val = pd.DataFrame(X_val, columns=X_full.columns)
-        X_test = pd.DataFrame(X_test, columns=X_full.columns)
+        X_train = pd.DataFrame(X_train, columns=X_train_cols)
+        X_val = pd.DataFrame(X_val, columns=X_train_cols)
+        X_test = pd.DataFrame(X_test, columns=X_train_cols)
 
     return X_train, X_val, X_test, y_train, y_val, y_test
