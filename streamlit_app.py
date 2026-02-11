@@ -8,7 +8,7 @@ from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
 from model.data_utils import load_training_data, load_test_data, preprocess
 
 from model import (
-    logistic_model,
+    logistic_regression,
     #decision_tree_model,
     #knn_model,
     #naive_bayes_model,
@@ -41,7 +41,7 @@ if uploaded_file is not None:
     )
 
     if model_choice == "Logistic Regression":
-        model, metrics = logistic_model.train_and_evaluate(X_train, X_test, y_train, y_test)
+        model, metrics = logistic_regression.train_and_evaluate(X_train, X_test, y_train, y_test)
 
     st.subheader("Evaluation Metrics")
 
