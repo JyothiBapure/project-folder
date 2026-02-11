@@ -16,22 +16,15 @@ def run_rf(uploaded_test_df=None):
 
     #model = RandomForestClassifier(n_estimators=200, max_depth=15, min_samples_split=10, random_state=42, n_jobs=-1)
     #random_model = RandomForestClassifier(n_estimators=200, max_depth=15, random_state=42)
-    random_model = RandomForestClassifier(
-        n_estimators=200,
-        max_depth=15,
-        class_weight='balanced',
-        random_state=42,
-        n_jobs=-1
-    )
-
+    random_model = RandomForestClassifier(n_estimators=100, max_depth=12, class_weight='balanced', random_state=42)
     random_model.fit(X_train, y_train)
-
-    #y_preds = random_model.predict(X_test)
-    #y_probs = random_model.predict_proba(X_test)[:, 1]
     y_probs = random_model.predict_proba(X_test)[:, 1]
 
-    threshold = 0.4   # keep same threshold for fair comparison
-    y_preds = (y_probs >= threshold).astype(int)
+    precisions, recalls, thresholds = precision_recall_curve(y_test, y_probs)
+    f1_scores = (2 * precisions * recalls) / (precisions + recalls + 1e-8)
+    best_threshold = thresholds[np.argmax(f1_scores)] if len(thresholds) > 0 else 0.5
+    
+    y_preds = (y_probs >= best_threshold).astype(int)
 
 
     metrics = {
