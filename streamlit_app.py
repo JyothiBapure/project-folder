@@ -19,17 +19,20 @@ from model import (
 st.title("Adult Income Classification App")
 
 # Upload test dataset
+uploaded_file = None
+
 uploaded_file = st.sidebar.file_uploader(
     "Upload Test Dataset (.csv or .test, with or without header)",
     type=["csv", "test"]
 )
 
-if uploaded_file is not None:
+# Get data (auto mode selection)
+X_train, X_test, y_train, y_test = get_data(uploaded_file)
 
-    train_df = load_training_data("adult.data")
-    test_df = load_test_data(uploaded_file)
-
-    X_train, X_test, y_train, y_test = preprocess(train_df, test_df)
+if uploaded_file is None:
+    st.info("No test file uploaded → Using internal train/test split (80/20).")
+else:
+    st.success("Using uploaded test dataset for evaluation.")
 
 model_choice = st.selectbox(
     "Select Model",
