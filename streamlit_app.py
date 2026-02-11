@@ -5,9 +5,9 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
 
-from models.data_util import load_training_data, load_test_data, preprocess
+from model.data_util import load_training_data, load_test_data, preprocess
 
-from models import (
+from model import (
     logistic_model,
     #decision_tree_model,
     #knn_model,
