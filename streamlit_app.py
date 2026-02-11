@@ -98,7 +98,8 @@ run_clicked = st.button("▶ Run Evaluation")
 if run_clicked:
     if selected_model == "Logistic Regression":
         st.write("Running evaluation for Logistic Regression")
-        metrics, confusion_metrix_, report = run_logic(uploaded_test_df)
+        #metrics, confusion_metrix_, report = run_logic(uploaded_test_df)
+        model, metrics = logistic_model.train_and_evaluate(X_train, X_test, y_train, y_test)
 
     elif selected_model == "Decision Tree Classifier":
         st.write("Running evaluation for Decision Tree Classifier")
@@ -144,21 +145,30 @@ if run_clicked:
 
     # Display confusion matrix
     st.subheader("Confusion Matrix")
-    st.write(confusion_metrix_)
+    y_pred = model.predict(X_test)
+    cm = confusion_matrix(y_test, y_pred)
+    #st.write(confusion_metrix_)
+    st.write(cm)
 
     # Display classification report
     st.subheader("Classification Report")
-    filtered_report = {k: v for k, v in report.items() if isinstance(v, dict)}
-    report_df = pd.DataFrame.from_dict(filtered_report, orient="index")
+    #filtered_report = {k: v for k, v in report.items() if isinstance(v, dict)}
+    #report_df = pd.DataFrame.from_dict(filtered_report, orient="index")
 
     # Add accuracy row safely
-    if "accuracy" in report:
-        report_df.loc["accuracy", "precision"] = report["accuracy"]
-        report_df.loc["accuracy", "recall"] = np.nan
-        report_df.loc["accuracy", "f1-score"] = np.nan
-        report_df.loc["accuracy", "support"] = np.nan
+    #if "accuracy" in report:
+    #    report_df.loc["accuracy", "precision"] = report["accuracy"]
+    #    report_df.loc["accuracy", "recall"] = np.nan
+    #    report_df.loc["accuracy", "f1-score"] = np.nan
+    3    report_df.loc["accuracy", "support"] = np.nan
 
     # Ensure numeric types and round
-    report_df = report_df[["precision", "recall", "f1-score", "support"]].astype(float).round(4)
+    #report_df = report_df[["precision", "recall", "f1-score", "support"]].astype(float).round(4)
 
-    st.dataframe(report_df, width="stretch")
+    #st.dataframe(report_df, width="stretch")
+
+    fig, ax = plt.subplots()
+    disp = ConfusionMatrixDisplay(confusion_matrix=cm)
+    disp.plot(ax=ax)
+
+    st.pyplot(fig)
