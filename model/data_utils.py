@@ -12,7 +12,7 @@ COLUMN_NAMES = [
 ]
 
 
-def load_training_data(train_path="adult.data"):
+def load_training_data(train_path="data/adult.data"):
     df = pd.read_csv(train_path, header=None, names=COLUMN_NAMES, na_values=" ?")
     df.dropna(inplace=True)
     df["income"] = df["income"].str.replace(".", "", regex=False)
