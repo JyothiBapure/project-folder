@@ -11,7 +11,7 @@ import numpy as np
 
 from model.data_utils import load_training_data, load_test_data, preprocess
 
-from models import (
+from model import (
     logistic_model,
     decision_tree_model,
     knn_model,
