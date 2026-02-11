@@ -15,19 +15,31 @@ def run_rf(uploaded_test_df=None):
     )
 
     #model = RandomForestClassifier(n_estimators=200, max_depth=15, min_samples_split=10, random_state=42, n_jobs=-1)
-    random_model = RandomForestClassifier(n_estimators=200, max_depth=15, random_state=42)
+    #random_model = RandomForestClassifier(n_estimators=200, max_depth=15, random_state=42)
+    random_model = RandomForestClassifier(
+        n_estimators=200,
+        max_depth=15,
+        class_weight='balanced',
+        random_state=42,
+        n_jobs=-1
+    )
 
     random_model.fit(X_train, y_train)
 
-    y_preds = random_model.predict(X_test)
+    #y_preds = random_model.predict(X_test)
+    #y_probs = random_model.predict_proba(X_test)[:, 1]
     y_probs = random_model.predict_proba(X_test)[:, 1]
+
+    threshold = 0.4   # keep same threshold for fair comparison
+    y_preds = (y_probs >= threshold).astype(int)
+
 
     metrics = {
         "Accuracy": round(accuracy_score(y_test, y_preds), 4),
         "AUC": round(roc_auc_score(y_test, y_probs), 4),
-        "Precision": round(precision_score(y_test, y_preds), 4),
-        "Recall": round(recall_score(y_test, y_preds), 4),
-        "F1": round(f1_score(y_test, y_preds), 4),
+        "Precision": round(precision_score(y_test, y_preds, zero_division=0), 4),
+        "Recall": round(recall_score(y_test, y_preds, zero_division=0), 4),
+        "F1": round(f1_score(y_test, y_preds, zero_division=0), 4),
         "MCC": round(matthews_corrcoef(y_test, y_preds), 4)
     }
 
