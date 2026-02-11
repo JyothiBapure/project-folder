@@ -10,7 +10,7 @@ from model.data_utils import load_train_and_test_data
 
 
 def run_dt(uploaded_test_df=None):
-    X_train, X_test, y_train, y_test = load_train_and_test_data(
+    X_train, X_val, X_test, y_train, y_val, y_test = load_train_and_test_data(
         scale_features=True,
         uploaded_test_file=uploaded_test_df
     )
@@ -24,15 +24,16 @@ def run_dt(uploaded_test_df=None):
     )
     #decision_model = DecisionTreeClassifier(criterion = 'entropy')
     decision_model.fit(X_train, y_train)
-    y_probs = decision_model.predict_proba(X_test)[:, 1]
+    y_val_probs = decision_model.predict_proba(X_val)[:, 1]
 
-    # Calculate Optimal Threshold
-    precisions, recalls, thresholds = precision_recall_curve(y_test, y_probs)
+    precisions, recalls, thresholds = precision_recall_curve(y_val, y_val_probs)
     f1_scores = (2 * precisions * recalls) / (precisions + recalls + 1e-8)
     optimal_idx = np.argmax(f1_scores)
-    best_threshold = thresholds[optimal_idx] if optimal_idx < len(thresholds) else 0.5
+    best_threshold = thresholds[optimal_idx]
 
-    y_preds = (y_probs >= best_threshold).astype(int)
+    # Evaluate on test
+    y_test_probs = decision_model.predict_proba(X_test)[:, 1]
+    y_preds = (y_test_probs >= best_threshold).astype(int)
 
     metrics = {
         "Accuracy": round(accuracy_score(y_test, y_preds), 4),
