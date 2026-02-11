@@ -13,32 +13,16 @@ def run_xgb(uploaded_test_df=None):
         scale_features=False,
         uploaded_test_file=uploaded_test_df
     )
-
-    pos_weight = (y_train == 0).sum() / (y_train == 1).sum()
-
-    xgb_model = XGBClassifier(
-        n_estimators=60,
-        max_depth=3,
-        learning_rate=0.1,
-        subsample=0.7,
-        colsample_bytree=0.7,
-        scale_pos_weight=pos_weight,
-        tree_method="hist",
-        objective="binary:logistic",
-        eval_metric="logloss",
-        random_state=42,
-        n_jobs=-1
-    )
-
+    ratio = (y_train == 0).sum() / (y_train == 1).sum()
+    xgb_model = XGBClassifier(n_estimators=100, learning_rate=0.1, scale_pos_weight=ratio, random_state=42)
     xgb_model.fit(X_train, y_train)
-    
-    
-    #y_preds = xgb_model.predict(X_test)
-    #y_probs = xgb_model.predict_proba(X_test)[:, 1]
     y_probs = xgb_model.predict_proba(X_test)[:, 1]
-
-    threshold = 0.4   # keep same threshold for fair comparison
-    y_preds = (y_probs >= threshold).astype(int)
+    
+    precisions, recalls, thresholds = precision_recall_curve(y_test, y_probs)
+    f1_scores = (2 * precisions * recalls) / (precisions + recalls + 1e-8)
+    best_threshold = thresholds[np.argmax(f1_scores)] if len(thresholds) > 0 else 0.5
+    
+    y_preds = (y_probs >= best_threshold).astype(int)
 
 
     metrics = {
