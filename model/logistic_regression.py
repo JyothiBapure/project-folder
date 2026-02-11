@@ -10,7 +10,7 @@ from model.data_utils import load_train_and_test_data
 
 def run_logic(uploaded_test_df=None):
 
-    # 3-way split
+    
     X_train, X_val, X_test, y_train, y_val, y_test = load_train_and_test_data(
         scale_features=True,
         uploaded_test_file=uploaded_test_df
