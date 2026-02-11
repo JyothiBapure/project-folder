@@ -45,11 +45,12 @@ def run_dt(uploaded_test_df=None):
     metrics = {
         "Accuracy": round(accuracy_score(y_test, y_preds), 4),
         "AUC": round(roc_auc_score(y_test, y_probs), 4),
-        "Precision": round(precision_score(y_test, y_preds), 4),
-        "Recall": round(recall_score(y_test, y_preds), 4),
-        "F1": round(f1_score(y_test, y_preds), 4),
+        "Precision": round(precision_score(y_test, y_preds, zero_division=0), 4),
+        "Recall": round(recall_score(y_test, y_preds, zero_division=0), 4),
+        "F1": round(f1_score(y_test, y_preds, zero_division=0), 4),
         "MCC": round(matthews_corrcoef(y_test, y_preds), 4)
     }
+
 
     return (
         metrics,
