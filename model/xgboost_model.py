@@ -14,14 +14,16 @@ def run_xgb(uploaded_test_df=None):
         uploaded_test_file=uploaded_test_df
     )
 
+    pos_weight = (y_train == 0).sum() / (y_train == 1).sum()
+
     xgb_model = XGBClassifier(
         n_estimators=60,
         max_depth=3,
         learning_rate=0.1,
         subsample=0.7,
         colsample_bytree=0.7,
+        scale_pos_weight=pos_weight,
         tree_method="hist",
-        max_bin=256,
         objective="binary:logistic",
         eval_metric="logloss",
         random_state=42,
@@ -31,15 +33,20 @@ def run_xgb(uploaded_test_df=None):
     xgb_model.fit(X_train, y_train)
     
     
-    y_preds = xgb_model.predict(X_test)
+    #y_preds = xgb_model.predict(X_test)
+    #y_probs = xgb_model.predict_proba(X_test)[:, 1]
     y_probs = xgb_model.predict_proba(X_test)[:, 1]
+
+    threshold = 0.4   # keep same threshold for fair comparison
+    y_preds = (y_probs >= threshold).astype(int)
+
 
     metrics = {
         "Accuracy": round(accuracy_score(y_test, y_preds), 4),
         "AUC": round(roc_auc_score(y_test, y_probs), 4),
-        "Precision": round(precision_score(y_test, y_preds), 4),
-        "Recall": round(recall_score(y_test, y_preds), 4),
-        "F1": round(f1_score(y_test, y_preds), 4),
+        "Precision": round(precision_score(y_test, y_preds, zero_division=0), 4),
+        "Recall": round(recall_score(y_test, y_preds, zero_division=0), 4),
+        "F1": round(f1_score(y_test, y_preds, zero_division=0), 4),
         "MCC": round(matthews_corrcoef(y_test, y_preds), 4)
     }
 
