@@ -23,7 +23,7 @@ def run_knn(uploaded_test_df=None):
 
     #y_preds = knn_model.predict(X_test)
     #y_probs = knn_model.predict_proba(X_test)[:, 1]
-    y_probs = model.predict_proba(X_test)[:, 1]
+    y_probs = knn_model.predict_proba(X_test)[:, 1]
 
     threshold = 0.4   # keep same threshold for fair comparison
     y_preds = (y_probs >= threshold).astype(int)
