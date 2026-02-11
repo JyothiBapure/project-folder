@@ -43,21 +43,6 @@ if uploaded_file is not None:
     if model_choice == "Logistic Regression":
         model, metrics = logistic_model.train_and_evaluate(X_train, X_test, y_train, y_test)
 
-    elif model_choice == "Decision Tree":
-        #model, metrics = decision_tree_model.train_and_evaluate(X_train, X_test, y_train, y_test)
-
-    elif model_choice == "KNN":
-        #model, metrics = knn_model.train_and_evaluate(X_train, X_test, y_train, y_test)
-
-    elif model_choice == "Naive Bayes":
-        #model, metrics = naive_bayes_model.train_and_evaluate(X_train, X_test, y_train, y_test)
-
-    elif model_choice == "Random Forest":
-        #model, metrics = random_forest_model.train_and_evaluate(X_train, X_test, y_train, y_test)
-
-    else:
-        #model, metrics = xgboost_model.train_and_evaluate(X_train, X_test, y_train, y_test)
-
     st.subheader("Evaluation Metrics")
 
     for key, value in metrics.items():
