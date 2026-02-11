@@ -23,7 +23,7 @@ def load_train_and_test_data(scale_features=False, uploaded_test_file=None):
     - If uploaded_test_file is provided: Uses adult.data for training and the file for testing.
     """
     # 1. Load Training Data
-    train_df = pd.read_csv('adult.data', names=COLUMNS, sep=r',\s*', engine='python', na_values='?')
+    train_df = pd.read_csv('data/adult.data', names=COLUMNS, sep=r',\s*', engine='python', na_values='?')
     train_df = train_df.dropna()
     
     # 2. Setup Training Features and Target
