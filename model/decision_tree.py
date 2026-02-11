@@ -14,7 +14,13 @@ def run_dt(uploaded_test_df=None):
         scale_features=True,
         uploaded_test_file=uploaded_test_df
     )
-    decision_model = DecisionTreeClassifier(max_depth=8, min_samples_leaf=150, class_weight='balanced', random_state=42)
+    decision_model = DecisionTreeClassifier(
+        max_depth=4,
+        min_samples_leaf=300,
+        min_samples_split=500,
+        class_weight='balanced',
+        random_state=42
+    )
     #decision_model = DecisionTreeClassifier(criterion = 'entropy')
     decision_model.fit(X_train, y_train)
     y_probs = decision_model.predict_proba(X_test)[:, 1]
