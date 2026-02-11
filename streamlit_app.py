@@ -19,7 +19,10 @@ from model import (
 st.title("Adult Income Classification App")
 
 # Upload test dataset
-uploaded_file = st.file_uploader("Upload Test Dataset (adult.test)", type=["csv"])
+uploaded_file = st.sidebar.file_uploader(
+    "Upload Test Dataset (.csv or .test, with or without header)",
+    type=["csv", "test"]
+)
 
 if uploaded_file is not None:
 
@@ -28,35 +31,32 @@ if uploaded_file is not None:
 
     X_train, X_test, y_train, y_test = preprocess(train_df, test_df)
 
-    model_choice = st.selectbox(
-        "Select Model",
-        (
-            "Logistic Regression",
-            "Decision Tree",
-            "KNN",
-            "Naive Bayes",
-            "Random Forest",
-            "XGBoost"
-        )
+model_choice = st.selectbox(
+    "Select Model",
+    (
+        "Logistic Regression",
+        "Decision Tree",
+        "KNN",
+        "Naive Bayes",
+        "Random Forest",
+        "XGBoost"
     )
+)
 
-    if model_choice == "Logistic Regression":
-        model, metrics = logistic_regression.train_and_evaluate(X_train, X_test, y_train, y_test)
+if model_choice == "Logistic Regression":
+    model, metrics = logistic_regression.train_and_evaluate(X_train, X_test, y_train, y_test)
 
-    st.subheader("Evaluation Metrics")
+st.subheader("Evaluation Metrics")
 
-    for key, value in metrics.items():
-        st.write(f"{key}: {value:.4f}")
+for key, value in metrics.items():
+    st.write(f"{key}: {value:.4f}")
 
     # Confusion Matrix
-    y_pred = model.predict(X_test)
-    cm = confusion_matrix(y_test, y_pred)
+y_pred = model.predict(X_test)
+cm = confusion_matrix(y_test, y_pred)
 
-    fig, ax = plt.subplots()
-    disp = ConfusionMatrixDisplay(confusion_matrix=cm)
-    disp.plot(ax=ax)
+fig, ax = plt.subplots()
+disp = ConfusionMatrixDisplay(confusion_matrix=cm)
+disp.plot(ax=ax)
 
-    st.pyplot(fig)
-
-else:
-    st.info("Please upload the adult.test file to proceed.")
+st.pyplot(fig)
