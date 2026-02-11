@@ -14,19 +14,7 @@ def run_logic(uploaded_test_df=None):
         scale_features=True,
         uploaded_test_file=uploaded_test_df
     )
-
-    poly = PolynomialFeatures(degree=2, interaction_only=True, include_bias=False)
-    X_train_poly = poly.fit_transform(X_train)
-    X_test_poly = poly.transform(X_test)
-
-    # Initialize model
-    logistic_model = LogisticRegression(
-        penalty='l1', 
-        solver='liblinear', # Required for l1
-        class_weight='balanced', 
-        max_iter=2000
-    )
-
+    logistic_model = LogisticRegression(class_weight='balanced', max_iter=1000, random_state=42)
     logistic_model.fit(X_train, y_train)
     y_probs = logistic_model.predict_proba(X_test)[:, 1]
 
